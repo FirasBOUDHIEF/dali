@@ -1,0 +1,228 @@
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="position-relative">
+                <figure class="overflow-hidden mb-0 d-flex justify-content-center">
+                    <img src="/couverturephoto.png" class="rounded-top" alt="profile cover">
+                </figure>
+                <div
+                    class="d-flex justify-content-between align-items-center position-absolute top-90 w-100 px-2 px-md-4 mt-n3">
+                    <div>
+                        <img class="w-70px rounded-circle" [src]="croppedImage || getUserImageUrl()" alt="profile">
+                        <span class="h4 ms-3 text-dark">{{firstName}} {{lastName}}</span>
+                    </div>
+                    <div class="d-none d-md-block" *ngIf="currentUserId == userId">
+                        <input hidden type="file" #fileInput (change)="fileChangeEvent($event)">
+                        <button class="btn btn-primary btn-icon-text" (click)="fileInput.click()">
+                            <i class="feather icon-arrow-up-circle
+                            btn-icon-prepend" style="color: white;"></i> Edit image
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row profile-body">
+    <!-- Left Wrapper Start -->
+    <div class="d-none d-md-block col-md-4 col-xl-3 left-wrapper">
+        <!-- Add this in the image cropper section -->
+        <div class="card rounded mb-3">
+            <div class="card-body">
+                <h6 class="card-title">Profile Image</h6>
+                @if (showImageCropper) {
+                <div class="mb-3">
+                    <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+                        [aspectRatio]="1/1" format="png" (imageCropped)="imageCropped($event)"
+                        (loadImageFailed)="loadImageFailed()"></image-cropper>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary" (click)="uploadImage()">
+                            Upload Image
+                        </button>
+                    </div>
+
+                    @if (uploadSuccess) {
+                    <div class="alert alert-success mt-3">
+                        Image uploaded successfully!
+                    </div>
+                    }
+
+                    @if (uploadError) {
+                    <div class="alert alert-danger mt-3">
+                        Error uploading image. Please try again.
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- About Card -->
+        <div class="card rounded">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="card-title mb-0">About</h6>
+                </div>
+                <div class="mt-3">
+                    <label class="fs-11px fw-bolder mb-0 text-uppercase">Birth Date:</label>
+                    <p class="text-secondary">{{birthDate | date}}</p>
+                </div>
+                <div class="mt-3">
+                    <label class="fs-11px fw-bolder mb-0 text-uppercase">Competences:</label>
+                    <ul class="text-secondary">
+                        @for (comp of competences; track comp) {
+                        <li>{{comp.name}}</li>
+                        }
+                    </ul>
+                </div>
+                <div class="mt-3">
+                    <a [href]="'http://localhost:8082/api/user/' +userId+'/cv'" download
+                        class="btn btn-primary w-100">Download CV</a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- Left Wrapper End -->
+
+    <!-- Middle Wrapper Start -->
+    <div class="col-md-8 col-xl-6 middle-wrapper">
+        <!-- Education -->
+        <div class="card rounded mb-3">
+            <div class="card-body">
+                <h6 class="card-title">Education</h6>
+                @for (formation of formations; track formation) {
+                <div class="mb-4">
+                    <h6>{{formation.institution}}</h6>
+                    <p class="text-secondary">{{formation.degree}} - {{formation.fieldOfStudy}}</p>
+                    <p class="text-secondary">
+                        {{formation.startDate | date}} - {{formation.endDate | date}}
+                    </p>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Experience -->
+        <div class="card rounded">
+            <div class="card-body">
+                <h6 class="card-title">Experience</h6>
+                @for (exp of experiences; track exp) {
+                <div class="mb-4">
+                    <h6>{{exp.title}} at {{exp.company}}</h6>
+                    <p class="text-secondary">{{exp.description}}</p>
+                    <p class="text-secondary">
+                        {{exp.startDate | date}} - {{exp.endDate | date}}
+                    </p>
+                </div>
+                }
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Reviews</h4>
+
+                        <!-- Average Rating -->
+                        <!-- <div class="d-flex align-items-center mb-4">
+                            <h5 class="me-3 mb-0">Average Rating:</h5>
+                            <ngb-rating [rate]="averageRating" [readonly]="true" [max]="5">
+                                <ng-template let-fill="fill" let-index="index">
+                                    <span [class.filled]="fill === 100">
+                                        <i class="feather icon-star" [class.text-warning]="fill === 100"></i>
+                                    </span>
+                                </ng-template>
+                            </ngb-rating>
+                            <span class="ms-2">{{ averageRating | number:'1.1-1' }} / 5</span>
+                        </div> -->
+
+                        <!-- Add Review Form -->
+                        <div class="mb-6">
+                            <div class="card border-light shadow-sm mb-5">
+                                <div class="card-body">
+                                    <h5 class="card-title display-6 border-bottom pb-2 mb-4">Leave a Review</h5>
+                                    <div class="mb-4">
+                                        <label class="form-label fs-5 text-secondary">Your Rating:</label>
+                                        <ngb-rating [(rate)]="newReview.rating" [max]="5"
+                                            class="text-warning fs-3"></ngb-rating>
+                                    </div>
+                                    <div class="mb-4">
+                                        <textarea class="form-control shadow-sm" [(ngModel)]="newReview.comment"
+                                            placeholder="Share your experience..." rows="3"
+                                            style="resize: none;"></textarea>
+                                        <small class="text-muted">Minimum 10 characters</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-primary px-5 py-2 shadow-sm" (click)="submitReview()"
+                                            [disabled]="!newReview.rating || !newReview.comment">
+                                            <i class="feather icon-send me-2"></i>Post Review
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reviews List -->
+                            <div class="review-list">
+                                <div *ngFor="let review of reviews" class="card border-light shadow-sm mb-4 rounded-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-light rounded-circle p-2 me-3">
+                                                        <i class="feather icon-user text-secondary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold">User #{{ review.reviewerId }}</h6>
+                                                        <small class="text-muted">
+                                                            <i class="feather icon-clock me-1"></i>
+                                                            {{ review.createdAt | date:'mediumDate' }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <ngb-rating [rate]="review.rating" [readonly]="true" [max]="5"
+                                                class="text-warning fs-5"></ngb-rating>
+                                        </div>
+                                        <p class="text-dark mb-3 ps-5">{{ review.comment }}</p>
+                                        <div class="text-end" *ngIf="currentUserId == userId">
+                                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                                (click)="deleteReview(review.id)">
+                                                <i class="feather icon-trash-2 me-1"></i>Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Middle Wrapper End -->
+
+    <!-- Right Wrapper Start -->
+    <div class="d-none d-xl-block col-xl-3">
+        <!-- Existing right wrapper content -->
+        <!-- profile.component.html --><!-- Rating Card -->
+        <div class="card rounded mt-3">
+            <div class="card-body">
+                <h6 class="card-title">Average Rating:</h6>
+                <ngb-rating [(rate)]="averageRating" [readonly]="true" [max]="5">
+                    <ng-template let-fill="fill" let-index="index">
+                        <span [class.filled]="fill === 100" [class.bad]="index < 2">
+                            <i data-feather="star" appFeatherIcon></i>
+                        </span>
+                    </ng-template>
+                </ngb-rating>
+                <span class="ms-2">{{ averageRating | number:'1.1-1' }} / 5</span>
+            </div>
+        </div>
+
+    </div>
+    <!-- Right Wrapper End -->
+</div>

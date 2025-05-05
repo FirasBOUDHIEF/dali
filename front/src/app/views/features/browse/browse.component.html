@@ -1,0 +1,77 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink=".">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Available Projects</li>
+    </ol>
+</nav>
+
+<!-- freelancer-tasks.component.html -->
+<div class="container mt-4">
+    <h2>Available Projects</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col" *ngFor="let task of tasks">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ task.title }}</h5>
+                    <div class="card-text">
+                        <p>{{ task.description }}</p>
+                        <br>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <span class="badge bg-primary">{{ task.category }}</span>
+                            <span class="badge bg-success">{{ task.budgetType }}: {{ task.currency }} {{ task.minAmount
+                                }} - {{ task.maxAmount }}</span>
+                        </div>
+                        <br>
+                        <div class="skills-container">
+                            <span *ngFor="let comp of task.competences" class="badge bg-light text-dark me-1">
+                                {{ comp.name }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <button class="btn btn-primary btn-sm" (click)="openApplyModal(task, applyModal)"
+                        [disabled]="hasApplied(task.id)">
+                        {{ hasApplied(task.id) ? 'Applied' : 'Apply Now' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Application Modal -->
+<ng-template #applyModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Apply for {{ selectedTask.title }}</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="submitApplication()">
+            <div class="mb-3">
+                <label class="form-label">Motivation Letter</label>
+                <textarea class="form-control" [(ngModel)]="application.motivation" name="motivation" rows="4"
+                    required></textarea>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="includeCv" [(ngModel)]="application.withCv"
+                    name="includeCv" [disabled]="false">
+                <label class="form-check-label" for="includeCv">
+                    Include my resume
+                    <span *ngIf="false" class="text-muted small">
+                        (Upload your resume in your profile first)
+                    </span>
+                </label>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    Submit Application
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>

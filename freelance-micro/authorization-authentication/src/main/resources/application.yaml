@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: authorization-authentication
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update  # Options: create, update, validate, none
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+file:
+  upload-dir: uploads
+
+image:
+  upload-dir: uploads/images
+
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    instance:
+      preferIpAddress: true
+keyStore:
+  path: keystore.jks
+  password: password
+server:
+  port: 8082
+  servlet:
+    context-path: /api
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enable: true

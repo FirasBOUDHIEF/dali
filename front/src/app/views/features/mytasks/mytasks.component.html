@@ -1,0 +1,176 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink=".">projects</a></li>
+        <li class="breadcrumb-item active" aria-current="page">List of your projects</li>
+    </ol>
+</nav>
+
+<ng-template #verticalCenteredModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Edit Task' : 'Create New Task' }}</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12 stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <form (ngSubmit)="handleTaskSubmit()">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control" [(ngModel)]="selectedTask.title"
+                                            name="title" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" [(ngModel)]="selectedTask.description"
+                                            name="description" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Budget Type</label>
+                                        <select class="form-select" [(ngModel)]="selectedTask.budgetType"
+                                            name="budgetType" required>
+                                            <option value="fixed">Fixed</option>
+                                            <option value="hourly">Hourly</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Currency</label>
+                                        <input type="text" class="form-control" [(ngModel)]="selectedTask.currency"
+                                            name="currency" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Min Amount</label>
+                                        <input type="number" class="form-control" [(ngModel)]="selectedTask.minAmount"
+                                            name="minAmount" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Max Amount</label>
+                                        <input type="number" class="form-control" [(ngModel)]="selectedTask.maxAmount"
+                                            name="maxAmount" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Category</label>
+                                        <input type="text" class="form-control" [(ngModel)]="selectedTask.category"
+                                            name="category" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Required Skills</label>
+                                        <tag-input [(ngModel)]="itemsAsObjects" theme="bootstrap" [identifyBy]="'name'"
+                                            [displayBy]="'name'" name="competences" placeholder="Add skills">
+                                        </tag-input>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    (click)="modal.close('by: close button')">Close</button>
+                                <button type="submit" class="btn btn-primary">
+                                    {{ isEditMode ? 'Update Task' : 'Create Task' }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-baseline mb-2">
+            <h6 class="card-title mb-0">Your Project</h6>
+            <div ngbDropdown class="mb-2">
+                <a class="no-dropdown-toggle-icon" ngbDropdownToggle id="dropdownMenuButton7">
+                    <i class="icon-lg text-secondary pb-3px" data-feather="more-horizontal" appFeatherIcon></i>
+                </a>
+                <div ngbDropdownMenu aria-labelledby="dropdownMenuButton7">
+                    <a ngbDropdownItem class="d-flex align-items-center"
+                        (click)="openEditModal(undefined, verticalCenteredModal)">
+                        <i data-feather="plus-circle" appFeatherIcon class="icon-sm me-2"></i>
+                        <span>Add New Project</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Budget</th>
+                        <th>Skills</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let task of tasks; let i = index" style="cursor: pointer;">
+                        <td [routerLink]="['/tasks', task.id, 'candidatures']">{{ i + 1 }}</td>
+                        <td [routerLink]="['/tasks', task.id, 'candidatures']">{{ task.title }}</td>
+                        <td [routerLink]="['/tasks', task.id, 'candidatures']">{{ task.createdAt | date: 'mediumDate' }}
+                        </td>
+                        <td [routerLink]="['/tasks', task.id, 'candidatures']">
+                            <span class="badge" [ngClass]="getStatusBadgeClass(task.status)">
+                                {{ task.status }}
+                            </span>
+                        </td>
+                        <td [routerLink]="['/tasks', task.id, 'candidatures']">
+                            {{ task.currency }} {{ task.minAmount | number }} - {{ task.maxAmount | number }}
+                            <small class="text-muted">({{ task.budgetType }})</small>
+                        </td>
+                        <td [routerLink]="['/tasks', task.id, 'candidatures']">
+                            <span *ngFor="let comp of task.competences" class="badge bg-light text-dark me-1">
+                                {{ comp.name }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-primary btn-sm me-1" ngbTooltip="Edit"
+                                    (click)="openEditModal(task, verticalCenteredModal)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" (click)="confirmDelete(task.id)"
+                                    ngbTooltip="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="!tasks || tasks.length === 0">
+                        <td colspan="7" class="text-center">No projects found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

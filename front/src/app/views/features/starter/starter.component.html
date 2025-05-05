@@ -1,0 +1,234 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">visit the site</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Complete your account</li>
+    </ol>
+</nav>
+
+
+<div class="col-12 vh-100 d-flex align-items-center justify-content-center">
+    <div class="card w-100 h-100">
+        <div class="card-body overflow-auto">
+            <h6 class="card-title">Complete your account</h6>
+
+            <aw-wizard #wizardForm>
+
+                <aw-wizard-step stepTitle="step 1">
+                    <form (ngSubmit)="form1Submit()" [formGroup]="validationForm1">
+
+                        <div class="row mb-3">
+                            <label for="firstName" class="col-sm-3 col-form-label">First name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="firstName" formControlName="firstName"
+                                    [ngClass]="{'is-invalid': isForm1Submitted && form1.firstName.errors}"
+                                    placeholder="First name">
+                                @if (isForm1Submitted && form1.firstName.errors?.required) {
+                                <p class="invalid-feedback"> Required </p>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="lastName" class="col-sm-3 col-form-label">Last name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                                    [ngClass]="{'is-invalid': isForm1Submitted && form1.lastName.errors}"
+                                    placeholder="Last name">
+                                @if (isForm1Submitted && form1.lastName.errors?.required) {
+                                <p class="invalid-feedback"> Required </p>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="userName" class="col-sm-3 col-form-label">Birthday</label>
+                            <div class="col-sm-9">
+
+                                <input type="date" class="form-control" id="birthDate" formControlName="birthDate"
+                                    [ngClass]="{'is-invalid': isForm1Submitted && form1.birthDate.errors}"
+                                    placeholder="User name">
+
+                                @if (isForm1Submitted && form1.birthDate.errors?.required) {
+                                <p class="invalid-feedback"> Required </p>
+                                }
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mt-2">
+                            <button class="btn btn-primary" type="submit">Continue</button>
+                        </div>
+                    </form>
+                </aw-wizard-step>
+
+                <!-- Add these steps after step 2 in your wizard -->
+
+                <aw-wizard-step stepTitle="Formation">
+                    <form (ngSubmit)="formationSubmit()" [formGroup]="formationForm">
+                        <div formArrayName="formations">
+                            <div *ngFor="let formation of formations.controls; let i = index" [formGroupName]="i">
+                                <div class="row mb-3">
+                                    <div class="col-11">
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">Diploma</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" formControlName="diploma">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">Institution</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" formControlName="institution">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">Start Date</label>
+                                            <div class="col-sm-9">
+                                                <input type="date" class="form-control" formControlName="startDate">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">End Date</label>
+                                            <div class="col-sm-9">
+                                                <input type="date" class="form-control" formControlName="endDate">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1">
+                                        <button *ngIf="i > 0" type="button" class="btn btn-danger"
+                                            (click)="removeFormation(i)">×</button>
+                                    </div>
+                                </div>
+                                <hr *ngIf="i !== formations.controls.length - 1">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-secondary" type="button" awPreviousStep>Back</button>
+                            <div>
+                                <button class="btn btn-success me-2" type="button" (click)="addFormation()">+ Add
+                                    Formation</button>
+                                <button class="btn btn-primary" type="submit">Continue</button>
+                            </div>
+                        </div>
+                    </form>
+                </aw-wizard-step>
+
+                <aw-wizard-step stepTitle="Experience">
+                    <form (ngSubmit)="experienceSubmit()" [formGroup]="experienceForm">
+                        <div formArrayName="experiences">
+                            <div *ngFor="let experience of experiences.controls; let i = index" [formGroupName]="i">
+                                <div class="row mb-3">
+                                    <div class="col-11">
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">Title</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" formControlName="title">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">Company</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" formControlName="company">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">Start Date</label>
+                                            <div class="col-sm-9">
+                                                <input type="date" class="form-control" formControlName="startDate">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">End Date</label>
+                                            <div class="col-sm-9">
+                                                <input type="date" class="form-control" formControlName="endDate">
+                                            </div>
+                                        </div>
+                                        <!-- Add other experience fields -->
+                                    </div>
+                                    <div class="col-1">
+                                        <button *ngIf="i > 0" type="button" class="btn btn-danger"
+                                            (click)="removeExperience(i)">×</button>
+                                    </div>
+                                </div>
+                                <hr *ngIf="i !== experiences.controls.length - 1">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-secondary" type="button" awPreviousStep>Back</button>
+                            <div>
+                                <button class="btn btn-success me-2" type="button" (click)="addExperience()">+ Add
+                                    Experience</button>
+                                <button class="btn btn-primary" type="submit">Continue</button>
+                            </div>
+                        </div>
+                    </form>
+                </aw-wizard-step>
+
+                <!-- Add this step before the finish step -->
+                <aw-wizard-step stepTitle="Competences">
+                    <form (ngSubmit)="competenceSubmit()" [formGroup]="competenceForm">
+                        <div class="card-body">
+                            <h6 class="card-title">Add Your Skills</h6>
+
+                            <tag-input [(ngModel)]="itemsAsObjects" theme="bootstrap" [displayBy]="'name'"
+                                [formControl]="competencesControl"
+                                [ngClass]="{'is-invalid': isCompetenceSubmitted && competencesControl.errors}"
+                                [modelAsStrings]="false" placeholder="Add skill">
+                            </tag-input>
+                            @if (isCompetenceSubmitted && competencesControl.errors?.required) {
+                            <p class="invalid-feedback">At least one skill is required</p>
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-secondary" type="button" awPreviousStep>Back</button>
+                            <div>
+                                <button class="btn btn-primary" type="submit">Continue</button>
+                            </div>
+                        </div>
+                    </form>
+                </aw-wizard-step>
+
+                <!-- Add this step before the finish step -->
+                <aw-wizard-step stepTitle="CV Upload">
+                    <div class="card-body">
+                        <h6 class="card-title">Upload Your CV (PDF only)</h6>
+
+                        <div class="dropzone" [dropzone]="config" (error)="onUploadError($event)"
+                            (success)="onUploadSuccess($event)" (removedFile)="onRemovedFile($event)">
+                            <div class="dz-message">
+                                Drop PDF file here or click to upload.<br>
+                                <span class="note needsclick">Max size: 5MB</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary mt-2 d-block ms-auto"
+                            (click)="resetDropzoneUploads()">Reset</button>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <button class="btn btn-secondary" type="button" awPreviousStep>Back</button>
+                        <button class="btn btn-primary" type="submit" (click)="cvSubmit()">Continue</button>
+                    </div>
+                </aw-wizard-step>
+
+                <aw-wizard-step stepTitle="finish">
+                    <div class="text-center">
+                        <i data-feather="check-circle" appFeatherIcon class="text-success mt-4 mb-2 icon-xxl"></i>
+                        <h3 class="text-secondary mb-3">Thank you!</h3>
+                        <p class="w-75 mx-auto mb-4 text-secondary">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut nulla nunc. Maecenas
+                            arcu sem,
+                            hendrerit a tempor quis, sagittis accumsan tellus. In hac habitasse platea dictumst.
+                        </p>
+                    </div>
+                    <div class="d-flex justify-content-center mt-2">
+                        <button class="btn btn-secondary me-2" type="button" awPreviousStep>Back</button>
+                        <button class="btn btn-success" type="button" (click)="finishFunction()">Finish</button>
+                    </div>
+                </aw-wizard-step>
+
+            </aw-wizard>
+
+        </div>
+    </div>
+</div>

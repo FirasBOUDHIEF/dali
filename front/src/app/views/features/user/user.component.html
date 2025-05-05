@@ -1,0 +1,52 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">List of users</li>
+    </ol>
+</nav><!-- freelancer-list.component.html -->
+<div class="container mt-4">
+    <h2 class="mb-4">Users List</h2>
+    <div class="input-group mb-4">
+        <span class="input-group-text">
+            <i data-feather="search" appFeatherIcon></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Search freelancers..." [(ngModel)]="searchTerm"
+            (input)="filterFreelancers()">
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Account Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let freelancer of freelancers">
+                    @if(freelancer.role != 'ROLE_ADMIN'){
+                    <td>{{ freelancer.id }}</td>
+                    <td>{{ freelancer.username }}</td>
+                    <td>{{ freelancer.email }}</td>
+                    <td>{{ freelancer.firstName }}</td>
+                    <td>{{ freelancer.lastName }}</td>
+                    <td>{{ freelancer.role }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" (click)="confirmDelete(freelancer.id)">
+                            <i class="feather icon-trash-2"></i>
+                        </button>
+                    </td>
+                    }
+
+                </tr>
+                <tr *ngIf="freelancers.length === 0">
+                    <td colspan="7" class="text-center">No users found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

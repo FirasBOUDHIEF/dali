@@ -1,0 +1,67 @@
+<!-- task-candidatures.component.html -->
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Applications for Project #{{ taskId }}</h2>
+        <a [routerLink]="'/task/list'" class="btn btn-outline-secondary">
+            <i class="feather icon-arrow-left me-2"></i>Back to Tasks
+        </a>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center">
+        <i class="feather icon-loader spin"></i>
+        <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col" *ngFor="let candidature of candidatures">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title">
+                            Application #{{ candidature.id }}
+                            <span class="badge" [ngClass]="{
+                                    'bg-success': candidature.confirmed,
+                                    'bg-warning': !candidature.confirmed
+                                  }">
+                                {{ candidature.confirmed ? 'Confirmed' : 'Pending' }}
+                            </span>
+                        </h5>
+                        <span class="badge bg-info" *ngIf="candidature.withCv">
+                            <a [href]="'http://localhost:8082/api/user/' +candidature.freelanceid+'/cv'"
+                                style="color: white; padding: 5px; font-size: 14px;"><i
+                                    class="feather icon-file-text me-2"></i>Download CV</a>
+                        </span>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted">Freelancer ID:</h6>
+                        <p>{{ candidature.freelanceid }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted">Motivation Letter:</h6>
+                        <p class="text-muted">{{ candidature.motivation }}</p>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+                    <button class="btn btn-sm btn-success" *ngIf="!candidature.confirmed"
+                        (click)="confirmApplication(candidature.id)">
+                        <i class="feather icon-check me-2"></i>Confirm
+                    </button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteApplication(candidature.id)">
+                        <i class="feather icon-trash-2 me-2"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading && candidatures.length === 0" class="alert alert-info mt-4">
+        <i class="feather icon-alert-octagon me-2"></i>No applications found for this task.
+    </div>
+</div>

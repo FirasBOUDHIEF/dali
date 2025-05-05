@@ -1,0 +1,79 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="home">tasks</a></li>
+        <li class="breadcrumb-item active" aria-current="page">My Projects</li>
+    </ol>
+</nav>
+
+<!-- freelancer-tasks.component.html -->
+<div class="container mt-4">
+    <h2 class="mb-4">My Projects</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col" *ngFor="let task of tasks">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title">{{ task.title }}</h5>
+                        <span class="badge" [ngClass]="getStatusBadgeClass(task.status)">
+                            {{ task.status }}
+                        </span>
+                    </div>
+                    <p class="card-text">{{ task.description }}</p>
+                    <div class="task-meta mb-3">
+                        <small class="text-muted d-block">
+                            <i class="feather icon-calendar me-1"></i>
+                            Deadline: {{ task.deadline | date }}
+                        </small>
+                        <small class="text-muted d-block">
+                            <i class="feather icon-dollar-sign me-1"></i>
+                            Budget: {{ task.currency }} {{ task.minAmount }} - {{ task.maxAmount }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+                    <button class="btn btn-sm btn-outline-primary" (click)="openEditModal(task)">
+                        <i class="feather icon-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-success" (click)="markTaskAsComplete(task.id)"
+                        [disabled]="task.status === 'COMPLETED'">
+                        <i class="feather icon-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="tasks.length === 0" class="alert alert-info mt-4">
+        No Projects assigned yet.
+    </div>
+</div>
+
+<!-- Edit Task Modal -->
+<ng-template #editModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Edit Task</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="updateTask()">
+            <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" [(ngModel)]="selectedTask.title" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" [(ngModel)]="selectedTask.description" name="description"
+                    required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Deadline</label>
+                <input type="date" class="form-control" [(ngModel)]="selectedTask.deadline" name="deadline" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</ng-template>

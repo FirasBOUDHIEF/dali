@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: apigateway
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://AUTHORIZATION-AUTHENTICATION
+          predicates:
+            - Path=/api/user/**
+        - id: tasks-service
+          uri: lb://TASK-SERVICE
+          predicates:
+            - Path=/api/tasks/**, /api/candidatures/**
+          filters:
+            - AuthenticationPreFilter
+        - id: review-server
+          uri: lb://REVIEW-SERVICE
+          predicates:
+            - Path=/api/reviews/**
+          filters:
+            - AuthenticationPreFilter
+        - id: messaging-server
+          uri: lb://MESSAGING-SERVICE
+          predicates:
+            - Path=/api/chats/**
+          filters:
+            - AuthenticationPreFilter
+        - id: notifications-server
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - AuthenticationPreFilter
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders: "*"
+            allowCredentials: true
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+
+keyStore:
+  path: keystore.jks
+  password: password
+  alias: auth-server
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    instance:
+      preferIpAddress: true
+
+gateway:
+  excludedUrl: /api/user, /login
+
+server:
+  port: 8083
